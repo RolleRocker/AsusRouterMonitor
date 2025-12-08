@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: asus-router-mcp-server
+  main:
+    banner-mode: off
+    web-application-type: none
+
+# ASUS Router Connection Settings
+asus:
+  router:
+    # Router hostname or IP address
+    host: ${ASUS_ROUTER_HOST:192.168.1.1}
+    
+    # Router HTTP/HTTPS port
+    port: ${ASUS_ROUTER_PORT:80}
+    
+    # Use HTTPS connection
+    use-https: ${ASUS_ROUTER_USE_HTTPS:false}
+    
+    # Router admin username
+    username: ${ASUS_ROUTER_USERNAME:admin}
+    
+    # Router admin password
+    password: ${ASUS_ROUTER_PASSWORD:}
+    
+    # Connection timeout in milliseconds
+    connection-timeout: ${ASUS_ROUTER_CONNECT_TIMEOUT:5000}
+    
+    # Read timeout in milliseconds
+    read-timeout: ${ASUS_ROUTER_READ_TIMEOUT:10000}
+
+# MCP Server Configuration
+mcp:
+  server:
+    name: asus-router
+    version: 1.0.0
+    transport: stdio
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.asusrouter: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
