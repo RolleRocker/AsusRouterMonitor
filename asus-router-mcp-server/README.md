@@ -102,26 +102,60 @@ asus:
 
 ## 🏃 Building and Running
 
+### Setup Environment Variables
+
+Create a `.env` file in the project root (see `.env.example`):
+
+```bash
+# Windows PowerShell
+$env:ASUS_ROUTER_HOST="192.168.1.1"
+$env:ASUS_ROUTER_USERNAME="admin"
+$env:ASUS_ROUTER_PASSWORD="your_password"
+
+# Windows CMD
+set ASUS_ROUTER_HOST=192.168.1.1
+set ASUS_ROUTER_USERNAME=admin
+set ASUS_ROUTER_PASSWORD=your_password
+
+# Linux/Mac
+export ASUS_ROUTER_HOST="192.168.1.1"
+export ASUS_ROUTER_USERNAME="admin"
+export ASUS_ROUTER_PASSWORD="your_password"
+```
+
 ### Build Project
 
 ```bash
 cd asus-router-mcp-server
+
+# Windows
+.\gradlew.bat clean build
+
+# Linux/Mac
 ./gradlew clean build
 ```
 
 This will:
-1. Compile Java sources
-2. Run annotation processor to generate MCP tool schemas
-3. Generate `mcp-tools.json` with all tool definitions
-4. Run all tests
-5. Package executable JAR
+1. Compile Java sources with annotation processing
+2. Run 75+ integration tests with MockRouterServer
+3. Generate test coverage reports
+4. Package executable JAR in `build/libs/`
+
+**Skip tests for faster builds**:
+```bash
+.\gradlew.bat clean build -x test
+```
 
 ### Run as MCP Server
 
 MCP servers communicate via stdio (standard input/output):
 
 ```bash
-java -jar build/libs/asus-router-mcp-server-1.0.0.jar
+# Windows
+java -jar build\libs\asus-router-mcp-server-1.0.0-SNAPSHOT.jar
+
+# Linux/Mac
+java -jar build/libs/asus-router-mcp-server-1.0.0-SNAPSHOT.jar
 ```
 
 The server will:
@@ -129,15 +163,39 @@ The server will:
 - Execute MCP tool calls
 - Write JSON-RPC 2.0 responses to stdout
 
+**With environment variables**:
+```bash
+# Windows PowerShell
+$env:ASUS_ROUTER_PASSWORD="your_password"
+java -jar build\libs\asus-router-mcp-server-1.0.0-SNAPSHOT.jar
+
+# Linux/Mac
+ASUS_ROUTER_PASSWORD=your_password java -jar build/libs/asus-router-mcp-server-1.0.0-SNAPSHOT.jar
+```
+
 ### Run as CLI (ShowRouterInfo)
 
 ```bash
-java -cp build/libs/asus-router-mcp-server-1.0.0.jar \
-  com.asusrouter.cli.ShowRouterInfoRunner [--detailed]
+# Basic output
+java -jar build\libs\asus-router-mcp-server-1.0.0-SNAPSHOT.jar --cli
+
+# Detailed output with all client information
+java -jar build\libs\asus-router-mcp-server-1.0.0-SNAPSHOT.jar --cli --detailed
 ```
 
-Options:
-- `--detailed`: Show extended information with all clients
+**CLI Output Example**:
+```
+╔═══════════════════════════════════════════╗
+║        ASUS Router Information            ║
+╠═══════════════════════════════════════════╣
+║ Router Status: ✓ Online                   ║
+║ Uptime: 5 days, 14 hours                  ║
+║ WAN IP: 203.0.113.42                      ║
+║ Memory: 45.2% (128 MB / 283 MB)           ║
+║ CPU: 12.3%                                ║
+║ Online Clients: 8                         ║
+╚═══════════════════════════════════════════╝
+```
 
 ## 📦 Project Structure
 
@@ -146,7 +204,7 @@ asus-router-mcp-server/
 ├── src/main/java/com/asusrouter/
 │   ├── AsusRouterMcpServerApplication.java          # Spring Boot main
 │   ├── domain/
-│   │   ├── model/                                   # 11 domain models
+│   │   ├── model/                                   # 11 domain models (records)
 │   │   │   ├── Uptime.java
 │   │   │   ├── MemoryUsage.java
 │   │   │   ├── CpuUsage.java
@@ -158,10 +216,12 @@ asus-router-mcp-server/
 │   │   │   ├── ClientSummary.java
 │   │   │   ├── RouterSettings.java
 │   │   │   ├── DhcpLease.java
-│   │   │   ├── OnlineClient.java
-│   │   │   ├── IpAddress.java                       # Value object
-│   │   │   ├── MacAddress.java                      # Value object
-│   │   │   └── Netmask.java                         # Value object
+│   │   │   └── OnlineClient.java
+│   │   ├── value/                                   # Value objects
+│   │   │   ├── IpAddress.java
+│   │   │   ├── MacAddress.java
+│   │   │   ├── Hostname.java
+│   │   │   └── Netmask.java
 │   │   └── exception/                               # 5 exception classes
 │   │       ├── ErrorCode.java
 │   │       ├── RouterException.java
@@ -170,14 +230,33 @@ asus-router-mcp-server/
 │   │       └── ClientNotFoundException.java
 │   ├── application/
 │   │   ├── port/
-│   │   │   ├── in/                                  # 17 inbound ports
+│   │   │   ├── in/                                  # 17 inbound ports (use cases)
 │   │   │   │   ├── GetUptimeUseCase.java
 │   │   │   │   ├── GetMemoryUsageUseCase.java
-│   │   │   │   └── ... (15 more)
+│   │   │   │   ├── GetCpuUsageUseCase.java
+│   │   │   │   ├── GetTrafficTotalUseCase.java
+│   │   │   │   ├── GetTrafficUseCase.java
+│   │   │   │   ├── GetWanStatusUseCase.java
+│   │   │   │   ├── GetClientFullInfoUseCase.java
+│   │   │   │   ├── GetClientInfoSummaryUseCase.java
+│   │   │   │   ├── GetOnlineClientsUseCase.java
+│   │   │   │   ├── GetDhcpLeasesUseCase.java
+│   │   │   │   ├── GetSettingsUseCase.java
+│   │   │   │   ├── GetNvramUseCase.java
+│   │   │   │   ├── GetClientListUseCase.java
+│   │   │   │   ├── GetNetworkDeviceListUseCase.java
+│   │   │   │   ├── GetWanLinkUseCase.java
+│   │   │   │   ├── IsAliveUseCase.java
+│   │   │   │   └── ShowRouterInfoUseCase.java
 │   │   │   └── out/                                 # 8 outbound ports
 │   │   │       ├── RouterUptimePort.java
 │   │   │       ├── RouterMemoryPort.java
-│   │   │       └── ... (6 more)
+│   │   │       ├── RouterCpuPort.java
+│   │   │       ├── RouterTrafficPort.java
+│   │   │       ├── RouterWanPort.java
+│   │   │       ├── RouterClientsPort.java
+│   │   │       ├── RouterSettingsPort.java
+│   │   │       └── RouterNetworkPort.java
 │   │   └── service/                                 # 17 use case implementations
 │   │       ├── GetUptimeService.java
 │   │       ├── GetMemoryUsageService.java
@@ -189,74 +268,148 @@ asus-router-mcp-server/
 │   │   │   └── JacksonConfig.java
 │   │   └── adapter/
 │   │       ├── in/mcp/                              # MCP JSON-RPC adapter
-│   │       │   ├── McpJsonRpcHandler.java
-│   │       │   └── StdioTransport.java
+│   │       │   ├── McpJsonRpcHandler.java           # Routes 17 tools
+│   │       │   └── McpStdioTransport.java           # stdin/stdout
 │   │       └── out/http/                            # HTTP router adapter
-│   │           ├── AsusRouterAuthenticator.java
-│   │           ├── RouterCommandExecutor.java
-│   │           └── adapter/                         # 8 adapter implementations
+│   │           ├── AsusRouterAuthenticator.java     # Login flow
+│   │           ├── RouterCommandExecutor.java       # HTTP client
+│   │           └── adapter/                         # 8 HTTP adapters
 │   │               ├── HttpRouterUptimeAdapter.java
-│   │               └── ... (7 more)
+│   │               ├── HttpRouterMemoryAdapter.java
+│   │               └── ... (6 more)
+│   ├── cli/
+│   │   └── ShowRouterInfoRunner.java               # CLI interface
 │   └── mcp/
 │       ├── annotations/                             # Annotation framework
-│       │   ├── McpTool.java
-│       │   ├── McpSchema.java
-│       │   └── McpParameter.java
+│       │   ├── McpTool.java                         # Tool metadata
+│       │   ├── McpSchema.java                       # JSON schema
+│       │   └── McpParameter.java                    # Parameter metadata
 │       └── processor/
 │           └── McpAnnotationProcessor.java          # Compile-time processor
 ├── src/main/resources/
-│   ├── application.yml
+│   ├── application.yml                              # Router configuration
 │   └── META-INF/services/
 │       └── javax.annotation.processing.Processor
-├── src/test/java/                                   # Comprehensive tests
-├── build.gradle
+├── src/test/java/com/asusrouter/
+│   ├── domain/model/                                # Domain model tests
+│   ├── application/service/                         # Service unit tests
+│   ├── infrastructure/adapter/                      # Adapter tests
+│   ├── integration/                                 # Integration tests
+│   │   ├── MockRouterServer.java                    # HTTP server simulator
+│   │   ├── RouterToolsIntegrationTest.java          # 22 tool tests
+│   │   ├── McpProtocolIntegrationTest.java          # 19 JSON-RPC tests
+│   │   ├── CliRunnerIntegrationTest.java            # 12 CLI tests
+│   │   ├── McpStdioIntegrationTest.java             # 6 stdio tests
+│   │   └── RouterIntegrationTest.java               # Real router tests
+│   └── architecture/
+│       └── HexagonalArchitectureTest.java           # ArchUnit rules
+├── build.gradle                                     # Java 21, Lombok 1.18.38
 ├── settings.gradle
-├── PROJECT_SPECIFICATION.md                         # 3000+ line spec document
-└── README.md
+├── .env.example                                     # Environment variables template
+├── .gitignore                                       # Excludes .env
+├── PROJECT_SPECIFICATION.md                         # 1374-line specification
+├── STATUS.md                                        # Current development status
+├── CONTINUE.md                                      # Development guide
+└── README.md                                        # This file
+```
+## 🔍 MCP Protocol
+
+### Tool Discovery
+
+The MCP server exposes all 17 tools via JSON-RPC 2.0. Clients can discover available tools:
+
+**Request** (stdin):
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/list"
+}
 ```
 
-## 🧪 Testing
-
-### Run All Tests
-
-```bash
-./gradlew test
+**Response** (stdout):
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "tools": [
+      {
+        "name": "asus_router_get_uptime",
+        "description": "Retrieve router uptime information",
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "required": []
+        }
+      },
+      {
+        "name": "asus_router_get_client_info_summary",
+        "description": "Retrieve summary information about a specific connected client",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "mac": {
+              "type": "string",
+              "description": "Client MAC address"
+            }
+          },
+          "required": ["mac"]
+        }
+      }
+      // ... 15 more tools
+    ]
+  }
+}
 ```
 
-### Run Specific Test
+### Tool Invocation
 
-```bash
-./gradlew test --tests GetUptimeServiceTest
+**Request**:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "asus_router_get_uptime",
+    "arguments": {}
+  }
+}
 ```
 
-### Test Coverage
-
-```bash
-./gradlew jacocoTestReport
-open build/reports/jacoco/test/html/index.html
+**Response**:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"since\":\"2024-01-15T10:30:00\",\"uptime\":\"5 days, 14:23:42\"}"
+      }
+    ]
+  }
+}
 ```
 
-### Architecture Tests
+### Error Handling
 
-ArchUnit tests enforce hexagonal architecture rules:
-- Domain layer has no framework dependencies
-- Application layer depends only on domain
-- Infrastructure layer can depend on all layers
-- Ports are interfaces, adapters are implementations
-
-## 🔍 MCP Tool Schema Generation
-
-The annotation processor automatically generates:
-
-1. **Individual Tool Schemas**: `*ToolSchema.java` classes
-2. **Tool Registry**: `McpToolRegistry.java` with all tools
-3. **MCP Tools JSON**: `mcp-tools.json` for client discovery
-
-Generated during compilation:
-
-```bash
-./gradlew compileJava
-ls build/generated/sources/annotationProcessor/java/main/com/asusrouter/infrastructure/adapters/in/mcp/generated/
+**Response** (error):
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "error": {
+    "code": -32000,
+    "message": "ROUTER_AUTH_FAILED: Authentication failed with router",
+    "data": {
+      "errorCode": "ROUTER_AUTH_FAILED",
+      "details": "Invalid username or password"
+    }
+  }
+}
 ```
 
 ## 📖 Usage Examples

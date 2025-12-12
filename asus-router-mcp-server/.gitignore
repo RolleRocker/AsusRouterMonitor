@@ -21,6 +21,14 @@ Thumbs.db
 *.log
 /logs/
 
+# Environment variables & secrets
+.env
+*.env
+!.env.example
+application-local.yml
+application-prod.yml
+*-secret.yml
+
 # Generated sources
 src/main/generated/
 src/test/generated/

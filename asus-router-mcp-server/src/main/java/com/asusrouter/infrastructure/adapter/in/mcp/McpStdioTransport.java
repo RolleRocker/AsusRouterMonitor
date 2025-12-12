@@ -17,8 +17,12 @@ import java.io.PrintWriter;
  * MCP stdio transport layer.
  * Reads JSON-RPC requests from stdin, writes responses to stdout.
  * This is the primary interface for AI assistant integration.
+ * 
+ * Note: Disabled during Spring Boot tests (profile != test) to prevent
+ * stream closed errors when stdin is unavailable.
  */
 @Component
+@org.springframework.context.annotation.Profile("!test")
 @RequiredArgsConstructor
 @Slf4j
 public class McpStdioTransport implements CommandLineRunner {

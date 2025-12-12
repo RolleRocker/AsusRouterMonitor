@@ -61,7 +61,7 @@ public class GetClientFullInfoService implements GetClientFullInfoUseCase {
             
         } catch (ClientNotFoundException e) {
             throw e;
-        } catch (Exception e) {
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
             throw new IllegalStateException("Failed to parse client full info response", e);
         }
     }
