@@ -1,6 +1,5 @@
 package com.asusrouter.application.port.in;
 
-import com.asusrouter.domain.exception.ErrorCode;
 import com.asusrouter.domain.model.TrafficTotal;
 import com.asusrouter.mcp.annotations.McpTool;
 

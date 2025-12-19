@@ -125,6 +125,7 @@ class RouterToolsIntegrationTest {
      * Configure Spring to use mock router server.
      */
     @DynamicPropertySource
+    @SuppressWarnings("unused")
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("asus.router.host", () -> "localhost");
         registry.add("asus.router.port", () -> MOCK_ROUTER_PORT);
@@ -135,12 +136,14 @@ class RouterToolsIntegrationTest {
     }
     
     @BeforeAll
+    @SuppressWarnings("unused")
     void startMockRouter() throws IOException {
         mockRouter = new MockRouterServer(MOCK_ROUTER_PORT, MOCK_USERNAME, MOCK_PASSWORD);
         mockRouter.start();
     }
     
     @AfterAll
+    @SuppressWarnings("unused")
     void stopMockRouter() {
         if (mockRouter != null) {
             mockRouter.stop();
@@ -429,6 +432,7 @@ class RouterToolsIntegrationTest {
     
     @Nested
     @DisplayName("Error Handling Tests")
+    @SuppressWarnings({"unused", "ResultOfObjectAllocationIgnored"}) // False positives in assertThrows
     class ErrorHandlingTests {
         
         @Test
@@ -461,11 +465,12 @@ class RouterToolsIntegrationTest {
     
     @Nested
     @DisplayName("Performance Tests")
+    @SuppressWarnings("unused")
     class PerformanceTests {
         
         @Test
         @DisplayName("Test multiple concurrent requests")
-        void testConcurrentRequests() throws InterruptedException {
+        void testConcurrentRequests() {
             int iterations = 10;
             long startTime = System.currentTimeMillis();
             

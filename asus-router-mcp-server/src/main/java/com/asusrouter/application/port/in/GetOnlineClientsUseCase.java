@@ -1,6 +1,6 @@
 package com.asusrouter.application.port.in;
 
-import com.asusrouter.domain.exception.ErrorCode;
+
 import com.asusrouter.domain.model.OnlineClient;
 import com.asusrouter.mcp.annotations.McpTool;
 import java.util.List;

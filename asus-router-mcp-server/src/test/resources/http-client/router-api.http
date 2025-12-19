@@ -1,0 +1,69 @@
+### ASUS Router Direct HTTP API Testing
+### Test router endpoints directly (bypasses MCP layer)
+### Configure router IP, username, password below
+
+@routerHost = 192.168.1.1
+@routerUsername = admin
+@routerPassword = password
+@baseUrl = http://{{routerHost}}
+
+### 1. Router Login (get authentication cookie)
+POST {{baseUrl}}/login.cgi
+Content-Type: application/x-www-form-urlencoded
+
+login_username={{routerUsername}}&login_passwd={{routerPassword}}&login_captcha=&login_mac=
+
+###
+
+### 2. Get Uptime (after logging in)
+GET {{baseUrl}}/appGet.cgi?hook=uptime
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 3. Get Memory Usage
+GET {{baseUrl}}/appGet.cgi?hook=memory_usage
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 4. Get CPU Usage
+GET {{baseUrl}}/appGet.cgi?hook=cpu_usage
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 5. Get Network Device List
+GET {{baseUrl}}/appGet.cgi?hook=get_network_device_list
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 6. Get Online Clients (list)
+GET {{baseUrl}}/appGet.cgi?hook=onlinelist
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 7. Get Traffic Statistics
+GET {{baseUrl}}/appGet.cgi?hook=netdev
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 8. Get WAN Status
+GET {{baseUrl}}/appGet.cgi?hook=wan_status
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 9. Get WAN Link Info
+GET {{baseUrl}}/appGet.cgi?hook=get_wan_link
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 10. Get DHCP Leases
+GET {{baseUrl}}/appGet.cgi?hook=dhcp_leases
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 11. Get Client List
+GET {{baseUrl}}/appGet.cgi?hook=get_clientlist
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 12. Get Settings (NVRAM values)
+GET {{baseUrl}}/appGet.cgi?hook=nvram_dump
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 13. Get Specific NVRAM Value
+GET {{baseUrl}}/appGet.cgi?hook=nvram_get&nvram_key=product_name
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+
+### 14. Check Router Alive
+GET {{baseUrl}}/appGet.cgi?hook=is_alive
+Authorization: Basic {{routerUsername}} {{routerPassword}}
+

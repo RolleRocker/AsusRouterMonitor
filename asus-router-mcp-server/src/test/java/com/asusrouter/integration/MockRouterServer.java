@@ -15,7 +15,10 @@ import com.sun.net.httpserver.HttpServer;
 /**
  * Mock ASUS Router HTTP server for integration testing.
  * Simulates router HTTP API endpoints with realistic responses.
+ * Note: Uses java.util.logging which doesn't support parameterized logging,
+ * so string concatenation is necessary. Thread.sleep used for retry backoff.
  */
+@SuppressWarnings({"squid:S2629", "squid:S2925"}) // String concatenation in logging, Thread.sleep in retry logic
 public class MockRouterServer {
     
     private static final Logger log = Logger.getLogger(MockRouterServer.class.getName());
@@ -59,7 +62,7 @@ public class MockRouterServer {
                 lastException = e;
                 if (attempt < maxRetries) {
                     long waitTime = 1000 * attempt; // Progressive backoff: 1s, 2s, 3s, 4s
-                    log.warning("Failed to bind to port " + port + " (attempt " + attempt + "), retrying in " + waitTime + "ms...");
+                    log.warning(String.format("Failed to bind to port %d (attempt %d), retrying in %dms...", port, attempt, waitTime));
                     try {
                         Thread.sleep(waitTime);
                     } catch (InterruptedException ie) {
@@ -248,7 +251,7 @@ public class MockRouterServer {
             
             case "get_wan_link" -> {
                 String unitStr = params.get("parameter");
-                Integer unit = (unitStr != null) ? Integer.parseInt(unitStr) : 0;
+                int unit = (unitStr != null) ? Integer.parseInt(unitStr) : 0;
                 // Return format: "status;interface" - simpler format
                 yield unit == 0 ? "1;wan0" : "0;wan1";
             }

@@ -1,6 +1,5 @@
 package com.asusrouter.application.service;
 
-import com.asusrouter.application.port.in.GetUptimeUseCase;
 import com.asusrouter.application.port.out.RouterUptimePort;
 import com.asusrouter.domain.model.Uptime;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,7 @@ class GetUptimeServiceTest {
     private GetUptimeService service;
     
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         service = new GetUptimeService(routerUptimePort);
     }

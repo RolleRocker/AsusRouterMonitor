@@ -28,7 +28,7 @@ public class ShowRouterInfoService implements ShowRouterInfoUseCase {
     
     @Override
     public String execute(Boolean detailed) {
-        boolean showDetailed = (detailed != null) ? detailed : false;
+        boolean showDetailed = Boolean.TRUE.equals(detailed);
         
         StringBuilder output = new StringBuilder();
         output.append("═══════════════════════════════════════════════════════\n");
@@ -131,7 +131,7 @@ public class ShowRouterInfoService implements ShowRouterInfoUseCase {
                           .append(String.format("%-15s", client.ip().value()))
                           .append("\n");
                 }
-            } else if (!detailed && clients.size() > 0) {
+            } else if (!detailed && !clients.isEmpty()) {
                 output.append("│ (Use --detailed flag to see client list)\n");
             }
         } catch (Exception e) {

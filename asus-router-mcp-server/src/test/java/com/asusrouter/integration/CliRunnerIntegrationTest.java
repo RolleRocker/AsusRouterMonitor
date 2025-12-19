@@ -47,6 +47,7 @@ class CliRunnerIntegrationTest {
     private final PrintStream originalOut = System.out;
     
     @DynamicPropertySource
+    @SuppressWarnings("unused")
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("asus.router.host", () -> "localhost");
         registry.add("asus.router.port", () -> MOCK_ROUTER_PORT);
@@ -55,12 +56,14 @@ class CliRunnerIntegrationTest {
     }
     
     @BeforeAll
+    @SuppressWarnings("unused")
     void startMockRouter() throws IOException {
         mockRouter = new MockRouterServer(MOCK_ROUTER_PORT, "admin", "test123");
         mockRouter.start();
     }
     
     @AfterAll
+    @SuppressWarnings("unused")
     void stopMockRouter() {
         if (mockRouter != null) {
             mockRouter.stop();
@@ -68,12 +71,14 @@ class CliRunnerIntegrationTest {
     }
     
     @BeforeEach
+    @SuppressWarnings("unused")
     void captureOutput() {
         outputCapture.reset();
         System.setOut(new PrintStream(outputCapture));
     }
     
     @AfterEach
+    @SuppressWarnings("unused")
     void restoreOutput() {
         System.setOut(originalOut);
     }
@@ -238,6 +243,7 @@ class CliRunnerIntegrationTest {
     
     @Nested
     @DisplayName("Output Format Validation")
+    @SuppressWarnings("unused")
     class OutputFormatTests {
         
         @Test
@@ -287,6 +293,7 @@ class CliRunnerIntegrationTest {
     
     @Nested
     @DisplayName("Content Accuracy Tests")
+    @SuppressWarnings("unused")
     class ContentAccuracyTests {
         
         @Test

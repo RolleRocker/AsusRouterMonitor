@@ -1,0 +1,231 @@
+### MCP Server HTTP Testing
+### Test MCP JSON-RPC 2.0 Protocol
+### Use for manual testing via IntelliJ HTTP Client
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### 1. Tools List - Discover all available tools
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "tools/list",
+  "params": {},
+  "id": 1
+}
+
+### 2. Get Router Uptime
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_uptime",
+  "params": {},
+  "id": 2
+}
+
+### 3. Check Router Alive Status
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_is_alive",
+  "params": {},
+  "id": 3
+}
+
+### 4. Get Memory Usage
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_memory_usage",
+  "params": {},
+  "id": 4
+}
+
+### 5. Get CPU Usage
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_cpu_usage",
+  "params": {},
+  "id": 5
+}
+
+### 6. Get Traffic Total
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_traffic_total",
+  "params": {},
+  "id": 6
+}
+
+### 7. Get WAN Status
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_wan_status",
+  "params": {},
+  "id": 7
+}
+
+### 8. Get Online Clients
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_online_clients",
+  "params": {},
+  "id": 8
+}
+
+### 9. Get Traffic (detailed by interface)
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_traffic",
+  "params": {},
+  "id": 9
+}
+
+### 10. Get Client Full Info
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_client_full_info",
+  "params": {
+    "mac": "AA:BB:CC:DD:EE:FF"
+  },
+  "id": 10
+}
+
+### 11. Get Client Info Summary
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_client_info_summary",
+  "params": {
+    "mac": "AA:BB:CC:DD:EE:FF"
+  },
+  "id": 11
+}
+
+### 12. Get DHCP Leases
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_dhcp_leases",
+  "params": {},
+  "id": 12
+}
+
+### 13. Get Router Settings
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_settings",
+  "params": {},
+  "id": 13
+}
+
+### 14. Get NVRAM Settings
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_nvram",
+  "params": {},
+  "id": 14
+}
+
+### 15. Get Client List
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_client_list",
+  "params": {},
+  "id": 15
+}
+
+### 16. Get Network Device List
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_network_device_list",
+  "params": {},
+  "id": 16
+}
+
+### 17. Get WAN Link Info
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_wan_link",
+  "params": {},
+  "id": 17
+}
+
+### 18. Show Router Info (CLI equivalent)
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_show_router_info",
+  "params": {},
+  "id": 18
+}
+
+### Error Handling Test - Invalid method
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "invalid_method",
+  "params": {},
+  "id": 99
+}
+
+### Error Handling Test - Missing required parameter
+POST {{baseUrl}}/mcp
+Content-Type: {{contentType}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "asus_router_get_client_full_info",
+  "params": {},
+  "id": 100
+}
+

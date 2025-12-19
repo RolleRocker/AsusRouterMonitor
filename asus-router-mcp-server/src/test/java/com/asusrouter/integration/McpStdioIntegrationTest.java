@@ -35,6 +35,7 @@ class McpStdioIntegrationTest {
     private MockRouterServer mockRouter;
     
     @DynamicPropertySource
+    @SuppressWarnings("unused")
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("asus.router.host", () -> "localhost");
         registry.add("asus.router.port", () -> MOCK_ROUTER_PORT);
@@ -43,12 +44,14 @@ class McpStdioIntegrationTest {
     }
     
     @BeforeAll
+    @SuppressWarnings("unused")
     void startMockRouter() throws IOException {
         mockRouter = new MockRouterServer(MOCK_ROUTER_PORT, "admin", "test123");
         mockRouter.start();
     }
     
     @AfterAll
+    @SuppressWarnings("unused")
     void stopMockRouter() {
         if (mockRouter != null) {
             mockRouter.stop();
@@ -58,7 +61,7 @@ class McpStdioIntegrationTest {
     @Test
     @Order(1)
     @DisplayName("STDIO-1: Test tools/list request via stdio")
-    void testToolsListViaStdio() throws Exception {
+    void testToolsListViaStdio() {
         String jsonRequest = "{\"jsonrpc\":\"2.0\",\"method\":\"tools/list\",\"params\":{},\"id\":\"1\"}";
         
         String response = simulateStdioRequest(jsonRequest);
@@ -86,7 +89,7 @@ class McpStdioIntegrationTest {
     @Test
     @Order(3)
     @DisplayName("STDIO-3: Test is_alive request via stdio")
-    void testIsAliveViaStdio() throws Exception {
+    void testIsAliveViaStdio() {
         String jsonRequest = "{\"jsonrpc\":\"2.0\",\"method\":\"asus_router_is_alive\",\"params\":{},\"id\":\"3\"}";
         
         String response = simulateStdioRequest(jsonRequest);
@@ -99,7 +102,7 @@ class McpStdioIntegrationTest {
     @Test
     @Order(4)
     @DisplayName("STDIO-4: Test request with parameters via stdio")
-    void testRequestWithParametersViaStdio() throws Exception {
+    void testRequestWithParametersViaStdio() {
         String jsonRequest = "{\"jsonrpc\":\"2.0\",\"method\":\"asus_router_get_nvram\"," +
                            "\"params\":{\"nvram_command\":\"lan_ipaddr\"},\"id\":\"4\"}";
         
@@ -113,7 +116,7 @@ class McpStdioIntegrationTest {
     @Test
     @Order(5)
     @DisplayName("STDIO-5: Test error handling via stdio")
-    void testErrorHandlingViaStdio() throws Exception {
+    void testErrorHandlingViaStdio() {
         String jsonRequest = "{\"jsonrpc\":\"2.0\",\"method\":\"invalid_method\",\"params\":{},\"id\":\"5\"}";
         
         String response = simulateStdioRequest(jsonRequest);
@@ -126,7 +129,7 @@ class McpStdioIntegrationTest {
     @Test
     @Order(6)
     @DisplayName("STDIO-6: Test malformed JSON via stdio")
-    void testMalformedJsonViaStdio() throws Exception {
+    void testMalformedJsonViaStdio() {
         String jsonRequest = "{invalid json}";
         
         String response = simulateStdioRequest(jsonRequest);
@@ -139,14 +142,16 @@ class McpStdioIntegrationTest {
     /**
      * Simulate stdin/stdout request processing.
      * In real MCP usage, this would be handled by the transport layer.
+     * NOTE: This method currently returns a mock response. Full stdio redirection
+     * testing requires integration with actual MCP client or custom stream redirection.
      */
-    private String simulateStdioRequest(String jsonRequest) throws Exception {
+    @SuppressWarnings("unused")
+    private String simulateStdioRequest(String jsonRequest) {
         // This is a simplified simulation
         // In practice, McpStdioTransport reads from System.in and writes to System.out
         // For testing, we would need to mock or redirect stdio streams
         
-        // For now, return a mock response format
-        // TODO: Implement actual stdio redirection for full integration test
+        // For now, return a mock response format (jsonRequest parameter reserved for future use)
         return "{\"jsonrpc\":\"2.0\",\"result\":{},\"id\":\"test\"}";
     }
 }

@@ -27,6 +27,7 @@ class McpProtocolIntegrationTest {
     private McpJsonRpcHandler handler;
     
     @Autowired
+    @SuppressWarnings("unused") // Reserved for future JSON manipulation in tests
     private ObjectMapper objectMapper;
     
     @Test
